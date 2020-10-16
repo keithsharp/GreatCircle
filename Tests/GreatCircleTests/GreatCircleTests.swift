@@ -46,6 +46,16 @@ final class GreatCircleTests: XCTestCase {
         XCTAssertEqual(bearing, kInitialBearingVersaillesToEiffelTower)
     }
     
+    func testFinalBearingEiffelTowerToVersailles() {
+        let bearing = locationEiffelTower.finalBearingTo(otherLocation: locationVersailles)
+        XCTAssertEqual(bearing, kFinalBearingEiffelTowerToVersailles)
+    }
+    
+    func testFinalBearingVersaillesToEiffelTower() {
+        let bearing = locationVersailles.finalBearingTo(otherLocation: locationEiffelTower)
+        XCTAssertEqual(bearing, kFinalBearingVersaillesToEiffelTower)
+    }
+    
     func testIntersection() {
         
         if let location = CLLocation(intersectionOf: locationSaintGermain, andBearing: locationSaintGermain.initialBearingTo(otherLocation: locationOrly), withLocation: locationEiffelTower, andBearing: kInitialBearingEiffelTowerToVersailles) {

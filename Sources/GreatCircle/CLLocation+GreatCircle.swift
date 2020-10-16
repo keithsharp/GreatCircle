@@ -128,6 +128,21 @@ extension CLLocation {
         return fmod(θ.radiansAsDegrees + 360.0, 360.0);
     }
     
+    /// Returns the final bearing (in degrees) between this location and the other location.
+    ///
+    /// The final bearing will differ from the initial bearing by varying degrees according to distance and latitude.
+    ///
+    /// - Parameter otherLocation: The other location.
+    /// - Returns: The final bearing (in degrees) between this location and the other location.
+    ///
+    func finalBearingTo(otherLocation: CLLocation) -> CLLocationDirection {
+        if self.isEqualTo(otherLocation: otherLocation) {
+            return 0.0
+        } else {
+            return fmod(otherLocation.initialBearingTo(otherLocation: self) + 180.0, 360.0)
+        }
+    }
+    
     /// Returns the distance (in meters) between this location and the other location.
     ///
     /// - Parameter otherLocation: The other location.
