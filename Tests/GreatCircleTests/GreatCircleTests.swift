@@ -45,4 +45,25 @@ final class GreatCircleTests: XCTestCase {
             XCTAssertFalse(true)
         }
     }
+    
+    func testDistanceSameLocations() {
+        let distance = locationIndianPond.distanceTo(otherLocation: locationIndianPond)
+        XCTAssertEqual(distance, 0.0)
+    }
+    
+    func testDistanceEqualLocations() {
+        let newLocation = CLLocation(latitude: 43.930912, longitude: -72.053811)
+        let distance = locationIndianPond.distanceTo(otherLocation: newLocation)
+        XCTAssertEqual(distance, 0.0)
+    }
+    
+    func testDistanceEiffelTowerToVersailles() {
+        let distance = locationEiffelTower.distanceTo(otherLocation: locationVersailles)
+        XCTAssertEqual(distance, kDistanceEiffelTowerToVersailles)
+    }
+    
+    func testDistanceVersaillesToEiffelTower() {
+        let distance = locationVersailles.distanceTo(otherLocation: locationEiffelTower)
+        XCTAssertEqual(distance, kDistanceEiffelTowerToVersailles)
+    }
 }

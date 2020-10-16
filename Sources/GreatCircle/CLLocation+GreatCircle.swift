@@ -74,6 +74,7 @@ extension CLLocation {
     /// - Parameter bearingOne: The bearing from the first location.
     /// - Parameter locationTwo: The second location.
     /// - Parameter bearingTwo: The bearing from the second location.
+    /// - Returns: A new CLLocation representing the intersection, or `nil` if there is no intersection.
     ///
     convenience init?(intersectionOf locationOne: CLLocation, andBearing bearingOne: CLLocationDirection, withLocation locationTwo: CLLocation, andBearing bearingTwo: CLLocationDirection) {
         // see http://williams.best.vwh.net/avform.htm#Intersection
@@ -125,5 +126,28 @@ extension CLLocation {
         let lon = fmod(λ3.radiansAsDegrees + 540.0, 360.0) - 180.0
         
         self.init(latitude: lat, longitude: lon)
+    }
+    
+    /// Returns the distance (in meters) between this location and the other location.
+    ///
+    /// - Parameter otherLocation: The other location.
+    /// - Returns: The distance (in meters) between this location and the other location.
+    ///
+    func distanceTo(otherLocation: CLLocation) -> CLLocationDistance {
+        if self.isEqualTo(otherLocation: otherLocation) {
+            return 0.0
+        }
+        
+        let φ1 = self.coordinate.latitude.degreesAsRadians
+        let λ1 = self.coordinate.longitude.degreesAsRadians
+        let φ2 = otherLocation.coordinate.latitude.degreesAsRadians
+        let λ2 = otherLocation.coordinate.longitude.degreesAsRadians
+        let Δφ = φ2 - φ1;
+        let Δλ = λ2 - λ1;
+        let a = sin(Δφ / 2.0) * sin(Δφ / 2.0) + cos(φ1) * cos(φ2) * sin(Δλ / 2.0) * sin(Δλ / 2.0);
+        let c = 2.0 * atan2(sqrt(a), sqrt(1.0 - a));
+        let d = kEarthRadiusInMeters * c;
+                
+        return d;
     }
 }
