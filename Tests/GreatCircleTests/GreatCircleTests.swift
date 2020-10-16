@@ -86,4 +86,42 @@ final class GreatCircleTests: XCTestCase {
         let distance = locationVersailles.distanceTo(otherLocation: locationEiffelTower)
         XCTAssertEqual(distance, kDistanceEiffelTowerToVersailles)
     }
+    
+    func testMidpointEiffelTowerToVersailles() {
+        let midpointA = locationEiffelTower.midpointTo(otherLocation: locationVersailles)
+        let midpointB = locationEiffelTower.locationWith(bearing: kInitialBearingEiffelTowerToVersailles, distance: kDistanceEiffelTowerToVersailles / 2.0)
+        
+        let distanceA = locationEiffelTower.distanceTo(otherLocation: midpointA)
+        let distanceB = locationVersailles.distanceTo(otherLocation: midpointB)
+        
+        XCTAssertEqual(distanceA, kDistanceEiffelTowerToVersailles / 2.0, accuracy: kAccuracyBest)
+        XCTAssertEqual(distanceB, kDistanceEiffelTowerToVersailles / 2.0, accuracy: kAccuracyBest)
+        XCTAssertEqual(midpointA.coordinate.latitude, midpointB.coordinate.latitude, accuracy: kAccuracyBest)
+        XCTAssertEqual(midpointA.coordinate.longitude, midpointB.coordinate.longitude, accuracy: kAccuracyBest)
+    }
+    
+    func testMidpointVersaillesToEiffelTower() {
+        let midpointA = locationVersailles.midpointTo(otherLocation: locationEiffelTower)
+        let midpointB = locationVersailles.locationWith(bearing: kInitialBearingVersaillesToEiffelTower, distance: kDistanceEiffelTowerToVersailles / 2.0)
+        
+        let distanceA = locationVersailles.distanceTo(otherLocation: midpointA)
+        let distanceB = locationEiffelTower.distanceTo(otherLocation: midpointB)
+        
+        XCTAssertEqual(distanceA, kDistanceEiffelTowerToVersailles / 2.0, accuracy: kAccuracyBest)
+        XCTAssertEqual(distanceB, kDistanceEiffelTowerToVersailles / 2.0, accuracy: kAccuracyBest)
+        XCTAssertEqual(midpointA.coordinate.latitude, midpointB.coordinate.latitude, accuracy: kAccuracyBest)
+        XCTAssertEqual(midpointA.coordinate.longitude, midpointB.coordinate.longitude, accuracy: kAccuracyBest)
+    }
+    
+    func testGenerateLocationVersailles() {
+        let location = locationEiffelTower.locationWith(bearing: kInitialBearingEiffelTowerToVersailles, distance: kDistanceEiffelTowerToVersailles)
+        XCTAssertEqual(location.coordinate.latitude, locationVersailles.coordinate.latitude, accuracy: kAccuracyBest)
+        XCTAssertEqual(location.coordinate.longitude, locationVersailles.coordinate.longitude, accuracy: kAccuracyBest)
+    }
+    
+    func testGenerateLocationEiffelTower() {
+        let location = locationVersailles.locationWith(bearing: kInitialBearingVersaillesToEiffelTower, distance: kDistanceEiffelTowerToVersailles)
+        XCTAssertEqual(location.coordinate.latitude, locationEiffelTower.coordinate.latitude, accuracy: kAccuracyBest)
+        XCTAssertEqual(location.coordinate.longitude, locationEiffelTower.coordinate.longitude, accuracy: kAccuracyBest)
+    }
 }

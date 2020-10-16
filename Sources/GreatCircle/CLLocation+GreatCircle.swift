@@ -125,7 +125,7 @@ extension CLLocation {
         let x = cos(φ1) * sin(φ2) - sin(φ1) * cos(φ2) * cos(Δλ)
         let θ = atan2(y, x)
         
-        return fmod(θ.radiansAsDegrees + 360.0, 360.0);
+        return fmod(θ.radiansAsDegrees + 360.0, 360.0)
     }
     
     /// Returns the final bearing (in degrees) between this location and the other location.
@@ -157,12 +157,77 @@ extension CLLocation {
         let λ1 = self.coordinate.longitude.degreesAsRadians
         let φ2 = otherLocation.coordinate.latitude.degreesAsRadians
         let λ2 = otherLocation.coordinate.longitude.degreesAsRadians
-        let Δφ = φ2 - φ1;
-        let Δλ = λ2 - λ1;
-        let a = sin(Δφ / 2.0) * sin(Δφ / 2.0) + cos(φ1) * cos(φ2) * sin(Δλ / 2.0) * sin(Δλ / 2.0);
-        let c = 2.0 * atan2(sqrt(a), sqrt(1.0 - a));
-        let d = kEarthRadiusInMeters * c;
+        let Δφ = φ2 - φ1
+        let Δλ = λ2 - λ1
+        let a = sin(Δφ / 2.0) * sin(Δφ / 2.0) + cos(φ1) * cos(φ2) * sin(Δλ / 2.0) * sin(Δλ / 2.0)
+        let c = 2.0 * atan2(sqrt(a), sqrt(1.0 - a))
+        let d = kEarthRadiusInMeters * c
                 
         return d;
+    }
+    
+    /// Returns a location representing the midpoint between this location and the other location.
+    ///
+    /// - Parameter otherLocation: The other location.
+    /// - Returns: A location representing the midpoint between this location and the other location.
+    ///
+    func midpointTo(otherLocation: CLLocation) -> CLLocation {
+        if self.isEqualTo(otherLocation: otherLocation) {
+            return self
+        }
+        
+        // φm = atan2( sinφ1 + sinφ2, √( (cosφ1 + cosφ2⋅cosΔλ) ⋅ (cosφ1 + cosφ2⋅cosΔλ) ) + cos²φ2⋅sin²Δλ )
+        // λm = λ1 + atan2(cosφ2⋅sinΔλ, cosφ1 + cosφ2⋅cosΔλ)
+        // see http://mathforum.org/library/drmath/view/51822.html for derivation
+        let φ1 = self.coordinate.latitude.degreesAsRadians
+        let λ1 = self.coordinate.longitude.degreesAsRadians
+                
+        let φ2 = otherLocation.coordinate.latitude.degreesAsRadians
+        let Δλ = (otherLocation.coordinate.longitude - self.coordinate.longitude).degreesAsRadians
+                
+        let Bx = cos(φ2) * cos(Δλ)
+        let By = cos(φ2) * sin(Δλ)
+                
+        let x = sqrt((cos(φ1) + Bx) * (cos(φ1) + Bx) + By * By)
+        let y = sin(φ1) + sin(φ2)
+        let φ3 = atan2(y, x)
+                
+        let λ3 = λ1 + atan2(By, cos(φ1) + Bx)
+        
+        let lat = φ3.radiansAsDegrees
+        let lon = fmod(λ3.radiansAsDegrees + 540.0, 360.0) - 180.0
+        
+        return CLLocation(latitude: lat, longitude: lon)
+    }
+    
+    /// Returns a location representing the point that lies at the specified bearing and distance from this location.
+    ///
+    /// - Parameter bearing: The bearing, in degrees.
+    /// - Parameter distance: The distance, in meters.
+    /// - Returns:A location representing the point that lies at the specified bearing and distance from this location.
+    ///
+    func locationWith(bearing: CLLocationDirection, distance: CLLocationDistance) -> CLLocation {
+        if distance == 0.0 {
+            return self
+        }
+        
+        // φ2 = asin( sinφ1⋅cosδ + cosφ1⋅sinδ⋅cosθ )
+        // λ2 = λ1 + atan2( sinθ⋅sinδ⋅cosφ1, cosδ − sinφ1⋅sinφ2 )
+        // see http://williams.best.vwh.net/avform.htm#LL
+        let δ = distance / kEarthRadiusInMeters // angular distance in radians
+        let θ = bearing.degreesAsRadians
+                
+        let φ1 = self.coordinate.latitude.degreesAsRadians
+        let λ1 = self.coordinate.longitude.degreesAsRadians
+                
+        let φ2 = asin(sin(φ1)*cos(δ) + cos(φ1)*sin(δ)*cos(θ))
+        let x = cos(δ) - sin(φ1) * sin(φ2)
+        let y = sin(θ) * sin(δ) * cos(φ1)
+        let λ2 = λ1 + atan2(y, x)
+        
+        let lat = φ2.radiansAsDegrees
+        let lon = fmod(λ2.radiansAsDegrees + 540.0, 360.0) - 180.0
+        
+        return CLLocation(latitude: lat, longitude: lon)
     }
 }
