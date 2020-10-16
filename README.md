@@ -2,14 +2,13 @@
 GreatCircle is an Swift framework that provides a set of extensions to the [`CLLocation`](https://developer.apple.com/documentation/corelocation/cllocation) class.
 
 ## The Problem
-The `CLLocation` class provides only one method: 
+The `CLLocation` class provides only one method for calculating the distance between two GPS locations: 
 
 ```swift
 func distance(from location: CLLocation) -> CLLocationDistance
 ```
 
-For calculating the distance between two GPS locations. Because of this, Swift developers must "roll their own" to solve more complex GPS location calculation 
-problems.
+This means that Swift developers must "roll their own" to solve more complex GPS location calculation problems.
 
 ## The Solution
 [GreatCircle](https://github.com/keithsharp/GreatCircle) provides a comprehensive set of extension methods to the `CLLocation` class that
