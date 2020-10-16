@@ -230,4 +230,44 @@ extension CLLocation {
         
         return CLLocation(latitude: lat, longitude: lon)
     }
+    
+    /// Returns the cross track distance of this location relative to the specified start location and end location.
+    ///
+    /// - Parameter startLocation: The start location.
+    /// - Parameter endLocation: The end location.
+    /// - Returns:The cross track distance of this location relative to the specified start location and end location.
+    ///
+    func crossTrackDistanceTo(startLocation: CLLocation, endLocation: CLLocation) -> CLLocationDistance {
+        if self.isEqualTo(otherLocation: startLocation) || self.isEqualTo(otherLocation: endLocation) {
+            return 0.0
+        }
+        
+        let δ13 = startLocation.distanceTo(otherLocation: self) / kEarthRadiusInMeters
+        let θ13 = startLocation.initialBearingTo(otherLocation: self).degreesAsRadians
+        let θ12 = startLocation.initialBearingTo(otherLocation: endLocation).degreesAsRadians
+                
+        let dxt = asin(sin(δ13) * sin(θ13 - θ12)) * kEarthRadiusInMeters;
+                
+        return dxt;
+    }
+    
+    /// Returns a location representing the cross track point of this location relative to the specified start location and end location.
+    ///
+    /// - Parameter startLocation: The start location.
+    /// - Parameter endLocation: The end location.
+    /// - Returns:A location representing the cross track point of this location relative to the specified start location and end location.
+    ///
+    func crossTrackLocationTo(startLocation: CLLocation, endLocation: CLLocation) -> CLLocation {
+        if self.isEqualTo(otherLocation: startLocation) || self.isEqualTo(otherLocation: endLocation) {
+            return self
+        }
+        
+        let distance = self.crossTrackDistanceTo(startLocation: startLocation, endLocation: endLocation)
+        if fabs(distance).compare(to: 0.0, withDecimalPlaces: 3) {
+            return self
+        } else {
+            let bearing = fmod(startLocation.initialBearingTo(otherLocation: endLocation) + (distance < 0.0 ? 90.0 : 270.0) + 360.0, 360.0)
+            return self.locationWith(bearing: bearing, distance: fabs(distance))
+        }
+    }
 }

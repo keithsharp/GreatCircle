@@ -124,4 +124,62 @@ final class GreatCircleTests: XCTestCase {
         XCTAssertEqual(location.coordinate.latitude, locationEiffelTower.coordinate.latitude, accuracy: kAccuracyBest)
         XCTAssertEqual(location.coordinate.longitude, locationEiffelTower.coordinate.longitude, accuracy: kAccuracyBest)
     }
+    
+    func testCrossTrackDistance90Degrees200Meters() {
+        let midpoint = locationEiffelTower.midpointTo(otherLocation: locationVersailles)
+        let bearing = locationEiffelTower.initialBearingTo(otherLocation: locationVersailles)
+        let testBearing = fmod(bearing + 90.0, 360.0)
+        let testLocation = midpoint.locationWith(bearing: testBearing, distance: 200.0)
+        
+        let distance = testLocation.crossTrackDistanceTo(startLocation: locationEiffelTower, endLocation: locationVersailles)
+        
+        XCTAssertEqual(distance, 200.0, accuracy: kAccuracyBetter)
+    }
+    
+    func testCrossTrackDistance270Degrees200Meters() {
+        let midpoint = locationEiffelTower.midpointTo(otherLocation: locationVersailles)
+        let bearing = locationEiffelTower.initialBearingTo(otherLocation: locationVersailles)
+        let testBearing = fmod(bearing + 270.0, 360.0)
+        let testLocation = midpoint.locationWith(bearing: testBearing, distance: 200.0)
+        
+        let distance = testLocation.crossTrackDistanceTo(startLocation: locationEiffelTower, endLocation: locationVersailles)
+        
+        XCTAssertEqual(distance, -200.0, accuracy: kAccuracyBetter)
+    }
+    
+    func testCrossTrackDistanceThatShouldBeVeryCloseToZero() {
+        let midpoint = locationEiffelTower.midpointTo(otherLocation: locationVersailles)
+        let distance = fabs(midpoint.crossTrackDistanceTo(startLocation: locationEiffelTower, endLocation: locationVersailles))
+        
+        XCTAssertEqual(distance, 0.0, accuracy: kAccuracyBest)
+    }
+    
+    func testCrossTrackPointThatShouldBeOnTheLine() {
+        let midpoint = locationEiffelTower.midpointTo(otherLocation: locationVersailles)
+        let crossTrackLocation = midpoint.crossTrackLocationTo(startLocation: locationEiffelTower, endLocation: locationVersailles)
+        
+        XCTAssertEqual(midpoint.distance(from: crossTrackLocation), 0.0, accuracy: kAccuracyBest)
+    }
+    
+    func testCrossTrackLocation90Degrees200Meters() {
+        let midpoint = locationEiffelTower.midpointTo(otherLocation: locationVersailles)
+        let bearing = locationEiffelTower.initialBearingTo(otherLocation: locationVersailles)
+        let testBearing = fmod(bearing + 90.0, 360.0)
+        let testLocation = midpoint.locationWith(bearing: testBearing, distance: 200.0)
+
+        let crossTrackLocation = testLocation.crossTrackLocationTo(startLocation: locationEiffelTower, endLocation: locationVersailles)
+
+        XCTAssertEqual(midpoint.distance(from: crossTrackLocation), 0.0, accuracy: kAccuracyGood)
+    }
+    
+    func testCrossTrackLocation270Degrees200Meters() {
+        let midpoint = locationEiffelTower.midpointTo(otherLocation: locationVersailles)
+        let bearing = locationEiffelTower.initialBearingTo(otherLocation: locationVersailles)
+        let testBearing = fmod(bearing + 270.0, 360.0)
+        let testLocation = midpoint.locationWith(bearing: testBearing, distance: 200.0)
+        
+        let crossTrackLocation = testLocation.crossTrackLocationTo(startLocation: locationEiffelTower, endLocation: locationVersailles)
+        let midDist = midpoint.distance(from: crossTrackLocation)
+        XCTAssertEqual(midDist, 0.0, accuracy: kAccuracyGood)
+    }
 }
