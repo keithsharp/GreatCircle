@@ -37,37 +37,6 @@ import CoreLocation
 let kEarthRadiusInMeters = 6371000.0
 
 extension CLLocation {
-    /// Compares this location to the other location for equality.
-    ///
-    /// - Parameter otherLocation: The other location to compare to this location.
-    /// - Returns: `true` if this location and the other location are equal; otherwise, `false`
-    ///
-    func isEqualTo(otherLocation: CLLocation) -> Bool {
-        return self == otherLocation || (self.coordinate.latitude == otherLocation.coordinate.latitude && self.coordinate.longitude == otherLocation.coordinate.longitude)
-    }
-    
-    /// Returns the initial bearing (in degrees) between this location and the other location.
-    ///
-    /// - Parameter otherLocation: The other location.
-    /// - Returns: The initial bearing (in degrees) between this location and the other location.
-    ///
-    func initialBearingTo(otherLocation: CLLocation) -> CLLocationDirection {
-        if self.isEqualTo(otherLocation: otherLocation) {
-            return 0.0
-        }
-        
-        let φ1 = self.coordinate.latitude.degreesAsRadians
-        let φ2 = otherLocation.coordinate.latitude.degreesAsRadians
-        let Δλ = (otherLocation.coordinate.longitude - self.coordinate.longitude).degreesAsRadians
-                
-        // see http://mathforum.org/library/drmath/view/55417.html
-        let y = sin(Δλ) * cos(φ2)
-        let x = cos(φ1) * sin(φ2) - sin(φ1) * cos(φ2) * cos(Δλ)
-        let θ = atan2(y, x)
-        
-        return fmod(θ.radiansAsDegrees + 360.0, 360.0);
-    }
-    
     /// Creates a `CLLocation` from the intersection of two locations and bearings.
     ///
     /// - Parameter locationOne: The first location.
@@ -126,6 +95,37 @@ extension CLLocation {
         let lon = fmod(λ3.radiansAsDegrees + 540.0, 360.0) - 180.0
         
         self.init(latitude: lat, longitude: lon)
+    }
+    
+    /// Compares this location to the other location for equality.
+    ///
+    /// - Parameter otherLocation: The other location to compare to this location.
+    /// - Returns: `true` if this location and the other location are equal; otherwise, `false`
+    ///
+    func isEqualTo(otherLocation: CLLocation) -> Bool {
+        return self == otherLocation || (self.coordinate.latitude == otherLocation.coordinate.latitude && self.coordinate.longitude == otherLocation.coordinate.longitude)
+    }
+    
+    /// Returns the initial bearing (in degrees) between this location and the other location.
+    ///
+    /// - Parameter otherLocation: The other location.
+    /// - Returns: The initial bearing (in degrees) between this location and the other location.
+    ///
+    func initialBearingTo(otherLocation: CLLocation) -> CLLocationDirection {
+        if self.isEqualTo(otherLocation: otherLocation) {
+            return 0.0
+        }
+        
+        let φ1 = self.coordinate.latitude.degreesAsRadians
+        let φ2 = otherLocation.coordinate.latitude.degreesAsRadians
+        let Δλ = (otherLocation.coordinate.longitude - self.coordinate.longitude).degreesAsRadians
+                
+        // see http://mathforum.org/library/drmath/view/55417.html
+        let y = sin(Δλ) * cos(φ2)
+        let x = cos(φ1) * sin(φ2) - sin(φ1) * cos(φ2) * cos(Δλ)
+        let θ = atan2(y, x)
+        
+        return fmod(θ.radiansAsDegrees + 360.0, 360.0);
     }
     
     /// Returns the distance (in meters) between this location and the other location.
