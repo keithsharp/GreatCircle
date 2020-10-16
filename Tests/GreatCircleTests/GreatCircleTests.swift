@@ -19,11 +19,24 @@ final class GreatCircleTests: XCTestCase {
     let kInitialBearingVersaillesToEiffelTower: CLLocationDistance = 65.003253951385318
     let kFinalBearingVersaillesToEiffelTower: CLLocationDistance = 65.134602968619618
 
+    let locationSaintGermain = CLLocation(latitude: 48.897728, longitude: 2.094977)
+    let locationOrly = CLLocation(latitude: 48.747114, longitude: 2.400526)
+    let locationEiffelTower = CLLocation(latitude: 48.858158, longitude: 2.294825)
+    let locationVersailles = CLLocation(latitude: 48.804766, longitude: 2.120339)
+    let locationIndianPond = CLLocation(latitude: 43.930912, longitude: -72.053811)
+    
+    func testInitialBearingSameLocationObject() {
+        let bearing = locationIndianPond.initialBearingTo(otherLocation: locationIndianPond)
+        XCTAssertEqual(bearing, 0.0)
+    }
+    
+    func testInitialBearingSameLocation() {
+        let newLocation = CLLocation(latitude: 43.930912, longitude: -72.053811)
+        let bearing = locationIndianPond.initialBearingTo(otherLocation: newLocation)
+        XCTAssertEqual(bearing, 0.0)
+    }
+    
     func testIntersection() {
-        let locationSaintGermain = CLLocation(latitude: 48.897728, longitude: 2.094977)
-        let locationOrly = CLLocation(latitude: 48.747114, longitude: 2.400526)
-        let locationEiffelTower = CLLocation(latitude: 48.858158, longitude: 2.294825)
-        //let locationVersailles = CLLocation(latitude: 48.804766, longitude: 2.120339)
         
         if let location = CLLocation(intersectionOf: locationSaintGermain, andBearing: locationSaintGermain.initialBearingTo(otherLocation: locationOrly), withLocation: locationEiffelTower, andBearing: kInitialBearingEiffelTowerToVersailles) {
             XCTAssertEqual(location.coordinate.latitude, 48.83569094988361, accuracy: kAccuracyBest)
