@@ -36,7 +36,7 @@ import CoreLocation
 // Radius of the Earth in metres
 public let kEarthRadiusInMeters = 6371000.0
 
-public extension CLLocation {
+extension CLLocation {
     /// Creates a `CLLocation` from the intersection of two locations and bearings.
     ///
     /// - Parameter locationOne: The first location.
@@ -45,7 +45,7 @@ public extension CLLocation {
     /// - Parameter bearingTwo: The bearing from the second location.
     /// - Returns: A new CLLocation representing the intersection, or `nil` if there is no intersection.
     ///
-    convenience init?(intersectionOf locationOne: CLLocation, andBearing bearingOne: CLLocationDirection, withLocation locationTwo: CLLocation, andBearing bearingTwo: CLLocationDirection) {
+    public convenience init?(intersectionOf locationOne: CLLocation, andBearing bearingOne: CLLocationDirection, withLocation locationTwo: CLLocation, andBearing bearingTwo: CLLocationDirection) {
         // see http://williams.best.vwh.net/avform.htm#Intersection
         let φ1 = locationOne.coordinate.latitude.degreesAsRadians
         let λ1 = locationOne.coordinate.longitude.degreesAsRadians
@@ -102,7 +102,7 @@ public extension CLLocation {
     /// - Parameter otherLocation: The other location to compare to this location.
     /// - Returns: `true` if this location and the other location are equal; otherwise, `false`
     ///
-    func isEqualTo(otherLocation: CLLocation) -> Bool {
+    public func isEqualTo(otherLocation: CLLocation) -> Bool {
         return self == otherLocation || (self.coordinate.latitude == otherLocation.coordinate.latitude && self.coordinate.longitude == otherLocation.coordinate.longitude)
     }
     
@@ -111,7 +111,7 @@ public extension CLLocation {
     /// - Parameter otherLocation: The other location.
     /// - Returns: The initial bearing (in degrees) between this location and the other location.
     ///
-    func initialBearingTo(otherLocation: CLLocation) -> CLLocationDirection {
+    public func initialBearingTo(otherLocation: CLLocation) -> CLLocationDirection {
         if self.isEqualTo(otherLocation: otherLocation) {
             return 0.0
         }
@@ -135,7 +135,7 @@ public extension CLLocation {
     /// - Parameter otherLocation: The other location.
     /// - Returns: The final bearing (in degrees) between this location and the other location.
     ///
-    func finalBearingTo(otherLocation: CLLocation) -> CLLocationDirection {
+    public func finalBearingTo(otherLocation: CLLocation) -> CLLocationDirection {
         if self.isEqualTo(otherLocation: otherLocation) {
             return 0.0
         } else {
@@ -148,7 +148,7 @@ public extension CLLocation {
     /// - Parameter otherLocation: The other location.
     /// - Returns: The distance (in meters) between this location and the other location.
     ///
-    func distanceTo(otherLocation: CLLocation) -> CLLocationDistance {
+    public func distanceTo(otherLocation: CLLocation) -> CLLocationDistance {
         if self.isEqualTo(otherLocation: otherLocation) {
             return 0.0
         }
@@ -171,7 +171,7 @@ public extension CLLocation {
     /// - Parameter otherLocation: The other location.
     /// - Returns: A location representing the midpoint between this location and the other location.
     ///
-    func midpointTo(otherLocation: CLLocation) -> CLLocation {
+    public func midpointTo(otherLocation: CLLocation) -> CLLocation {
         if self.isEqualTo(otherLocation: otherLocation) {
             return self
         }
@@ -206,7 +206,7 @@ public extension CLLocation {
     /// - Parameter distance: The distance, in meters.
     /// - Returns:A location representing the point that lies at the specified bearing and distance from this location.
     ///
-    func locationWith(bearing: CLLocationDirection, distance: CLLocationDistance) -> CLLocation {
+    public func locationWith(bearing: CLLocationDirection, distance: CLLocationDistance) -> CLLocation {
         if distance == 0.0 {
             return self
         }
@@ -237,7 +237,7 @@ public extension CLLocation {
     /// - Parameter endLocation: The end location.
     /// - Returns:The cross track distance of this location relative to the specified start location and end location.
     ///
-    func crossTrackDistanceTo(startLocation: CLLocation, endLocation: CLLocation) -> CLLocationDistance {
+    public func crossTrackDistanceTo(startLocation: CLLocation, endLocation: CLLocation) -> CLLocationDistance {
         if self.isEqualTo(otherLocation: startLocation) || self.isEqualTo(otherLocation: endLocation) {
             return 0.0
         }
@@ -257,7 +257,7 @@ public extension CLLocation {
     /// - Parameter endLocation: The end location.
     /// - Returns:A location representing the cross track point of this location relative to the specified start location and end location.
     ///
-    func crossTrackLocationTo(startLocation: CLLocation, endLocation: CLLocation) -> CLLocation {
+    public func crossTrackLocationTo(startLocation: CLLocation, endLocation: CLLocation) -> CLLocation {
         if self.isEqualTo(otherLocation: startLocation) || self.isEqualTo(otherLocation: endLocation) {
             return self
         }
