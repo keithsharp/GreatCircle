@@ -34,9 +34,9 @@
 import CoreLocation
 
 // Radius of the Earth in metres
-let kEarthRadiusInMeters = 6371000.0
+public let kEarthRadiusInMeters = 6371000.0
 
-extension CLLocation {
+public extension CLLocation {
     /// Creates a `CLLocation` from the intersection of two locations and bearings.
     ///
     /// - Parameter locationOne: The first location.

@@ -26,17 +26,17 @@ import Foundation
 
 // MARK: Convert Radians to Degrees and Degrees to Radians
 extension Double {
-    var degreesAsRadians: Double {
+    internal var degreesAsRadians: Double {
         return self * .pi / 180.0
     }
     
-    var radiansAsDegrees: Double {
+    internal var radiansAsDegrees: Double {
         return self * 180.0 / .pi
     }
 }
 
 // MARK: Doubles to the specified number of decimal places
-extension Double {
+internal extension Double {
     /// Returns value rounded to the specified number of decimal places
     ///
     /// - Parameter places: The number of decimal places to round to..
